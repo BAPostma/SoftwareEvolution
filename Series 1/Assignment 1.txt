@@ -1,0 +1,31 @@
+=== Series 1 ===
+Questions:
+1. Which metrics are used?
+2. How are these metrics computed?
+3. How well do these metrics indicate what we really want to know about these systems and how can we judge that?
+4. How can we improve any of the above?
+
+
+- Question 1
+Based on the information listed in the paper, the following metrics are used in the proposed SIG Maintainability Model:
+	- Volume: The overall volume of the source code influences the analysability of the system.
+		= Lines of Code
+		= Man years via backfiring function points
+		= Other volume measures
+	
+	- Complexity per unit: The complexity of source code units influences the system’s changeability and its testability.
+		= Cyclomatic complexity per unit
+		= Other complexity measures
+	
+	- Duplication: The degree of source code duplication (also called code cloning) influences analysability and changeability.
+		= Duplicated blocks over 6 lines
+	
+	- Unit size: The size of units influences their analysability and testability and therefore of the system as a whole.
+		= Lines of code per unit
+	
+	- Unit testing: The degree of unit testing influences the analysability, stability, and testability of the system.
+		= Unit test coverage
+		= Number of assert statements
+	
+The scale of the grading is ++ / + / 0 / - / --
+
