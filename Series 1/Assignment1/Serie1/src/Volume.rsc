@@ -1,7 +1,6 @@
 module Volume
 
 import lang::java::jdt::m3::Core;
-import lang::java::jdt::m3::AST;
 
 import Set;
 import List;
@@ -12,6 +11,24 @@ import String;
 //M3 smallProject = createM3FromEclipseProject(|project://SmallSql|);
 //M3 bigProject = createM3FromEclipseProject(|project://hsqldb|);
 //M3 testProject = createM3FromEclipseProject(|project://Tester|);
+
+/**
+ * getRatingForAnalysability
+ * Return rate for LOC
+ * The rate for LOC matches also the man years.
+ * ++ => 1
+ *  + => 2
+ *  0 => 3
+ *  - => 4
+ * -- => 5
+ */
+public int getRatingForAnalysability(int numberOfLines){
+	if(numberOfLines < 66000) return 1;
+	else if(numberOfLines < 246000) return 2;
+	else if(numberOfLines < 665000) return 3;
+	else if(numberOfLines < 1310000) return 4;
+	else return 5;
+}
 
 /**
  * countMethods
@@ -39,8 +56,8 @@ public int countFiles(M3 project){
  * Count the # of lines of code of the whole project.
  * @return int - number of loc in the project
  */
-public int countProjectLOC(M3 project){
-	return sum([countFileLOC(x) | x <- files(project)]);
+public num countProjectLOC(M3 project){
+	return sum([countFileLOC(x) | x <- files(project)]); 
 }
 /**
  * countFileLOC
@@ -53,7 +70,7 @@ public int countProjectLOC(M3 project){
 public int countFileLOC(loc file){
 	file = readFile(file);
 	cleanSource = cleanCode(file);
-	return size(cleanSource );
+	return size(cleanSource);
 }
 /**
  * cleanCode
@@ -66,7 +83,7 @@ public list[str] cleanCode(str lines){
 	return removeEmptyLines(tmp);
 }
 /**
- * removeComments
+ * removeComment
  * Remove all the comments from the code
  * @param str lines - the lines of codes
  * @return str - lines without comments
