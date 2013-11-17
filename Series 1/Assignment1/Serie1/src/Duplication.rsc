@@ -55,11 +55,11 @@ private int findDuplicates(list[str] source) {
 	int foundCount = 0;
 	while(size(section) > 0) {
 		// find in project
-		list[str] intersection = findInAllFiles(section);
+		int intersections = findInAllFiles(toCleanString(section));
 		
 		// if found, increment counter for this section
-		if(size(intersection) > 0) {
-			foundCount += 1;
+		if(intersections > 0) {
+			foundCount += intersections;
 		}
 		
 		rowIndex += 1;
@@ -69,15 +69,16 @@ private int findDuplicates(list[str] source) {
 	return foundCount;
 }
 
-private list[str] findInAllFiles(list[str] sourceExcerpt) {
+private int findInAllFiles(str sourceExcerpt) {
 	for(file <- files(m3Project)) {
-		list[str] lines = readFileLines(file);
-		
-		list[str] intersection = sourceExcerpt & lines;
-		if(intersection != []) {
-			return intersection;
+		str lines = readFile(file);
+				
+		list[int] intersection = findAll(lines, sourceExcerpt);
+		if(size(intersection) > 0) {
+			return size(intersection);
 		}
 	}
+	return 0;
 }
 
 private list[str] getNextSection(list[str] source, int rowIndex) {
@@ -97,7 +98,15 @@ private list[str] getNextSection(list[str] source, int rowIndex) {
 //	}
 //}
 
-
+private str toCleanString(list[str] input) {
+	str retVal = "";
+	
+	for(i <- input) {
+		retVal += i;
+	}
+	
+	return retVal;
+}
 
 
 
