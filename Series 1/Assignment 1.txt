@@ -15,7 +15,6 @@ Based on the information listed in the paper, the following metrics are used in 
 	
 	- Complexity per unit: The complexity of source code units influences the system’s changeability and its testability.
 		= Cyclomatic complexity per unit
-		= Other complexity measures
 	
 	- Duplication: The degree of source code duplication (also called code cloning) influences analysability and changeability.
 		= Duplicated blocks over 6 lines
