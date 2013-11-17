@@ -9,10 +9,11 @@ import lang::java::m3::Core;
 import lang::java::jdt::m3::Core;
 import lang::java::m3::AST;
 import lang::java::jdt::m3::AST;
+import Volume;
 
 M3 m3Project;
 
-public real duplicationRatio(loc project) {
+public num duplicationRatio(loc project) {
 	m3Project = createM3FromEclipseProject(project);
 	
 	if(isEmpty(m3Project)) return 0;
@@ -22,9 +23,14 @@ public real duplicationRatio(loc project) {
 		duplicates += processMethods(file);
 	}
 	
-	println("Duplicates: <duplicates>");
+	num projectLoc = countProjectLOC(m3Project);
+	num percentage = (duplicates / projectLoc) * 100;
 	
-	return 0.0; // % of total project
+	println("Duplicates: <duplicates>");
+	println("Total LOC: <projectLoc>");
+	println("Percentage duplicate: <percentage>");
+	
+	return percentage; // % of total project
 }
 
 private int processMethods(loc file) {
@@ -37,7 +43,6 @@ private int processMethods(loc file) {
 		sourceLines = readFileLines(method);
 		int duplicates = findDuplicates(sourceLines);
 		duplicationCount += duplicates;
-		println("------------------------------------");
 	}
 	
 	return duplicationCount;
