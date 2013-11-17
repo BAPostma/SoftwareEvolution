@@ -57,7 +57,7 @@ public int countFiles(M3 project){
  * @return int - number of loc in the project
  */
 public num countProjectLOC(M3 project){
-	return sum([countFileLOC(x) | x <- files(project)]); 
+	return sum([countFileLOC(x) | x <- files(project)]);
 }
 /**
  * countFileLOC

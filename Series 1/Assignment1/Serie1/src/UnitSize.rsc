@@ -11,6 +11,15 @@ import util::Math;
  * risk:> 50 && <= 100
  * very high risk: >100 
  */
+ 
+ public int calculateRatingForUnitSize(M3 project){
+ 	tmp = getUnitSizePerMethod(project);
+ 	
+ 	numbers = determinePercentagePerRisk(determineNumberPerRisk(tmp));
+ 	
+ 	return getRating(numbers);
+ }
+ 
 /**
  * getRating
  * ++ => 1
@@ -19,7 +28,7 @@ import util::Math;
  *  - => 4
  * -- => 5
  */
-public int getRating(map[str, num] numbers){
+private int getRating(map[str, num] numbers){
 	num moderate = numbers["moderate"];
 	num risk = numbers["risk"];
 	num highRisk = numbers["highRisk"];
@@ -41,7 +50,7 @@ public int getRating(map[str, num] numbers){
  * Returns the loc for each method in a map
  * @returns map[loc, num] where loc = the method, num = loc
  */
-public map[loc, num] getUnitSizePerMethod(M3 project){
+private map[loc, num] getUnitSizePerMethod(M3 project){
 	// This works just fine BUT it does also counts the signature and the closing } as LOC
 	return (method:countFileLOC(method) | method <- methods(project));
 }
@@ -49,7 +58,7 @@ public map[loc, num] getUnitSizePerMethod(M3 project){
  * determineNumberPerRisk
  * Determine the number of different level of risk
  */
-public map[str, num] determineNumberPerRisk(map[loc, num] sizes){
+private map[str, num] determineNumberPerRisk(map[loc, num] sizes){
 	result = ();
 	result += ("moderate": 0);
 	result += ("risk": 0);
@@ -67,7 +76,7 @@ public map[str, num] determineNumberPerRisk(map[loc, num] sizes){
 	}	
 	return result;
 }
-public map[str, num] determinePercentagePerRisk(map[str, num] risks){
+private map[str, num] determinePercentagePerRisk(map[str, num] risks){
 	num total =  risks["moderate"] + risks["risk"] + risks["highRisk"];
 	
 	risks["moderate"] = round((risks["moderate"] / total) * 100);

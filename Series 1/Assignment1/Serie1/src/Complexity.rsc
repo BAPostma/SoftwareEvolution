@@ -53,8 +53,8 @@ public map[str, tuple[num, num]] convertCCMethodsToRisk(map[loc, num] methods){
 	
 	for(key <- methods){
 		num v = methods[key];
-		int n = countFileLOC(key);
-		println(n);
+		int n = countFileLOC(key); // time consuming call
+		
 		if(v <= 10){
 			result["simple"][0] += 1;
 			result["simple"][1] += n;
