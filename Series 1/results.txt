@@ -1,0 +1,71 @@
+rascal>analyze(smallProject);
+-----------------------------------------------
+--------- SIGs Maintainability Index  ---------
+-----------------------------------------------
+Start counting LOC
+Ready counting LOC
+Calculating Cyclometic Complexity
+	Method information gathered
+	Complexiting rating gathered
+Unit testing rating gathered
+Unit size determination started
+Unit size determination finished
+-----------------------------------------------
+---------         Volume              ---------
+-----------------------------------------------
+Total LOC: 24304
+Rating for volume: 5 stars
+-----------------------------------------------
+---------         Complexity          ---------
+-----------------------------------------------
+Rating for complexity: 1 stars
+-----------------------------------------------
+---------         Unit Size           ---------
+-----------------------------------------------
+Number of methods per category:
+	Simple: 1949
+	Moderate: 401
+	High: 39
+	Very high: 11
+Rating for unit size: 4 stars
+-----------------------------------------------
+---------        Unit Testing         ---------
+-----------------------------------------------
+Number of asserts found: 7
+Runtime: 1:17 minuut
+
+
+-----------------------------------------------
+--------- SIGs Maintainability Index  ---------
+-----------------------------------------------
+Start counting LOC
+Ready counting LOC
+Calculating Cyclometic Complexity
+	Method information gathered
+	Complexiting rating gathered
+Unit testing rating gathered
+Unit size determination started
+Unit size determination finished
+-----------------------------------------------
+---------         Volume              ---------
+-----------------------------------------------
+Total LOC: 173184
+Rating for volume: 4 stars
+-----------------------------------------------
+---------         Complexity          ---------
+-----------------------------------------------
+Rating for complexity: 1 stars
+-----------------------------------------------
+---------         Unit Size           ---------
+-----------------------------------------------
+Number of methods per category:
+	Simple: 7288
+	Moderate: 3008
+	High: 355
+	Very high: 155
+Rating for unit size: 2 stars
+-----------------------------------------------
+---------        Unit Testing         ---------
+-----------------------------------------------
+Number of asserts found: 23
+Runtime: 16:45 min

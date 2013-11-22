@@ -5,21 +5,22 @@ import Volume;
 import lang::java::jdt::m3::Core;
 import Map;
 import util::Math;
+
+import IO;
+
 /**
  * Information:
  * moderate: > 10 && <= 50
  * risk:> 50 && <= 100
  * very high risk: >100 
  */
- 
- public int calculateRatingForUnitSize(M3 project){
+  public int calculateRatingForUnitSize(M3 project){
  	tmp = getUnitSizePerMethod(project);
  	
  	numbers = determinePercentagePerRisk(determineNumberPerRisk(tmp));
- 	
+ 	println("<numbers>");
  	return getRating(numbers);
- }
- 
+ } 
 /**
  * getRating
  * ++ => 1
@@ -28,11 +29,11 @@ import util::Math;
  *  - => 4
  * -- => 5
  */
-private int getRating(map[str, num] numbers){
+public int getRating(map[str, num] numbers){
 	num moderate = numbers["moderate"];
 	num risk = numbers["risk"];
 	num highRisk = numbers["highRisk"];
-	
+		
 	if(moderate < 25 && risk == 0 && highRisk == 0){
 		return 1;
 	}else if (moderate < 30 && risk < 5 && highRisk == 0){
@@ -58,15 +59,18 @@ private map[loc, num] getUnitSizePerMethod(M3 project){
  * determineNumberPerRisk
  * Determine the number of different level of risk
  */
-private map[str, num] determineNumberPerRisk(map[loc, num] sizes){
+public map[str, num] determineNumberPerRisk(map[loc, num] sizes){
 	result = ();
+	result += ("simple":0);
 	result += ("moderate": 0);
 	result += ("risk": 0);
 	result += ("highRisk": 0);
 	
 	for(x <- sizes){
 		num v = sizes[x];
-		if(v > 10 && v <= 50){
+		if (v <= 10){
+			result["simple"] += 1;
+		}else if(v > 10 && v <= 50){
 			result["moderate"] += 1;
 		} else if (v > 50 && v <= 100){
 			result["risk"] += 1;
@@ -76,12 +80,17 @@ private map[str, num] determineNumberPerRisk(map[loc, num] sizes){
 	}	
 	return result;
 }
-private map[str, num] determinePercentagePerRisk(map[str, num] risks){
-	num total =  risks["moderate"] + risks["risk"] + risks["highRisk"];
+public map[str, num] determinePercentagePerRisk(map[str, num] risks){
+	num total =  risks["moderate"] + risks["risk"] + risks["highRisk"] + risks["simple"];
 	
+	if(total==0){
+		risks["moderate"] = 0;
+		risks["risk"] = 0;
+		risks["highRisk"] = 0;
+		return risks;
+	}	
 	risks["moderate"] = round((risks["moderate"] / total) * 100);
 	risks["risk"] = round((risks["risk"] / total) * 100);
 	risks["highRisk"] = round((risks["highRisk"] / total) * 100);
-	
 	return risks;
 }

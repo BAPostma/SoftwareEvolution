@@ -7,6 +7,7 @@ import List;
 import IO;
 import String;
 
+
 // Test projects
 //M3 smallProject = createM3FromEclipseProject(|project://SmallSql|);
 //M3 bigProject = createM3FromEclipseProject(|project://hsqldb|);

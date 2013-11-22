@@ -3,20 +3,16 @@ module Complexity
 import lang::java::jdt::m3::Core;
 import lang::java::jdt::m3::AST;
 
-import IO;
 import List;
 import Volume;
 import util::Math;
 
-public num cyclometicComplexityProject(M3 project){
-	// Collect values for all methods
-	map[loc, num] complexityMethods = (); 
+public map[loc, tuple[num cc, num asserts, num lines]] ccMethodsInfo(M3 project){
+	map[loc, tuple[num cc, num asserts, num lines]] complexityMethods = ();
 	for(method <- methods(project)){
 		complexityMethods += (method:cyclometicComplexityPerMethod(method, project));
 	}
-	histo = convertCCMethodsToRisk(complexityMethods);
-	
-	return getRatingForChangeability(histo);
+	return complexityMethods;
 }
 /**
  * getRatingForChangeability
@@ -44,24 +40,25 @@ public int getRatingForChangeability(map[str, tuple[num, num]] risk){
 		return 5;
 	}
 }
-public map[str, tuple[num, num]] convertCCMethodsToRisk(map[loc, num] methods){
+public map[str, tuple[num, num]] convertCCMethodsToRisk(map[loc, tuple[num cc, num asserts, num lines]] methods){
 	result = ();
 	result += ("simple": <0,0>); // <count, loc>
-	result += ("more_complex":<0,0>);
-	result += ("complex":<0,0>);
-	result += ("untestable":<0,0>);
+	result += ("more_complex": <0,0>);
+	result += ("complex": <0,0>);
+	result += ("untestable": <0,0>);
+	
 	
 	for(key <- methods){
-		num v = methods[key];
-		int n = countFileLOC(key); // time consuming call
+		num c = methods[key].cc; // cc value
+		num n = methods[key].lines; // number of lines
 		
-		if(v <= 10){
+		if(c <= 10){
 			result["simple"][0] += 1;
 			result["simple"][1] += n;
-		} else if (v >= 11 && v <= 20){
+		} else if (c >= 11 && c <= 20){
 			result["more_complex"][0] += 1;
 			result["more_complex"][1] += n;
-		} else if(v >= 21 && v <= 50){
+		} else if(c >= 21 && c <= 50){
 			result["complex"][0] += 1;
 			result["complex"][1] += n;
 		} else {
@@ -91,29 +88,24 @@ private map[str, tuple[num,num]] convertRiskTableLocToPercentage(map[str, tuple[
 	return toConvert;
 		
 }
-public int cyclometicComplexityPerMethod(loc method, project){
+public tuple[num cc, num asserts, num lines] cyclometicComplexityPerMethod(loc method, project){
 	ast = getMethodASTEclipse(method, model = project);
 	count = 1;
-	
-	// TODO:: determine if switch counts for 1 or that (all cases and the default count for 1 each)
+	asserts = 0;
 	visit(ast){
 		case \if(_,_) : 					count += 1;
 		case \if(_,_,_):					count += 1;
-		case \conditional(_,_,_):			count += 1;
+		case \switch(_,_):					count += 1;
 		case \case(_) : 					count += 1;
-		case \defaultCase():				count += 1;
 		case \while(_,_):					count += 1;
 		case \do(_,_):						count += 1;
 		case \for(_,_,_):					count += 1;
 		case \for(_,_,_,_):					count += 1;
 		case \foreach(_,_,_):				count += 1;
-		case \continue():					count += 1;
-		case \break():						count += 1;
-		case \try(_,_):						count += 1;
-		case \try(_,_,_):					count += 1;
-		case \throw(_):						count += 1;
-		case \return():						count += 1;
-		case \return(_):					count += 1;
+		case \infix(_, op, _, _):			if(op == "&&" || op == "||") count += 1;
+		case \catch(_,_):					count += 1;
+		case \assert(_):					asserts += 1;
+		case \assert(_,_):					asserts += 1;
 	}
-	return count;
+	return <count,asserts, countFileLOC(method)>;
 }
