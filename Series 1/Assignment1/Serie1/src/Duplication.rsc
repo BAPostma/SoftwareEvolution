@@ -13,96 +13,100 @@ import Volume;
 
 M3 m3Project;
 
+list[str] occurrences = [];
+list[loc] firstOccurrences = [];
+bool foundADuplicate = false;
+
 public num duplicationRatio(loc project) {
 	m3Project = createM3FromEclipseProject(project);
 	
 	if(isEmpty(m3Project)) return 0;
 	
-	int duplicates = 0;
 	for(file <- files(m3Project)) {
-		duplicates += processMethods(file);
+		processMethods(file);
 	}
 	
-	num projectLoc = countProjectLOC(m3Project);
-	num percentage = (duplicates / projectLoc) * 100;
+	int duplicates = size(occurrences);
+	//num projectLoc = countProjectLOC(m3Project);
+	//num percentage = (duplicates / projectLoc) * 100;
 	
 	println("Duplicates: <duplicates>");
-	println("Total LOC: <projectLoc>");
-	println("Percentage duplicate: <percentage>");
+	//println("Total LOC: <projectLoc>");
+	//println("Percentage duplicate: <percentage>");
 	
-	return percentage; // % of total project
+	return 0.0; //percentage; // % of total project
 }
 
-private int processMethods(loc file) {
+private void processMethods(loc file) {
 	M3 m3File = createM3FromFile(file);
 	
 	set[loc] methods = { m | m <- methods(m3File) };
 	
-	int duplicationCount = 0;
 	for(method <- methods) {
 		sourceLines = readFileLines(method);
-		int duplicates = findDuplicates(sourceLines);
-		duplicationCount += duplicates;
+		
+		findDuplicates(sourceLines, file);
+		
+		if(foundADuplicate) {
+			firstOccurrences = [method] + firstOccurrences;
+		}
+		
+		foundADuplicate = false; // reset after processing every method
 	}
-	
-	return duplicationCount;
 }
 
-private int findDuplicates(list[str] source) {
+private void findDuplicates(list[str] source, loc original) {
 	int rowIndex = 0;
 	list[str] section = getNextSection(source, rowIndex);
 	
-	int foundCount = 0;
+	int sectionsFoundCount = 0;
+	int duplicatesFoundCount = 0;
 	while(size(section) > 0) {
-		// find in project
-		int intersections = findInAllFiles(toCleanString(section));
+		str excerpt = toCleanString(section);
+		int intersections = findInAllFiles(excerpt, original);
 		
-		// if found, increment counter for this section
 		if(intersections > 0) {
-			foundCount += intersections;
+			occurrences = [excerpt] + occurrences;
+			rowIndex += 7;
+		} else {
+			rowIndex += 1;
 		}
 		
-		rowIndex += 1;
 		section = getNextSection(source, rowIndex);
 	}
-	
-	return foundCount;
 }
 
-private int findInAllFiles(str sourceExcerpt) {
+private int findInAllFiles(str sourceExcerpt, loc original) {
 	for(file <- files(m3Project)) {
 		str lines = readFile(file);
-				
+		
 		list[int] intersection = findAll(lines, sourceExcerpt);
-		if(size(intersection) > 0) {
-			return size(intersection);
+		int intersections = size(intersection);
+		
+		if(size(intersection) > 0 && file != original) {
+			foundADuplicate = true;
+			return intersections; // return number of duplicates found
 		}
 	}
+	
 	return 0;
 }
 
 private list[str] getNextSection(list[str] source, int rowIndex) {
 	int numElements = size(source);
 	int startIndex = rowIndex;	
-	int endIndex = (numElements <= 6) || (startIndex + 7 >= numElements) ? numElements - 1 : startIndex + 6;
+	int endIndex = startIndex + 7;
 	
-	if(startIndex > numElements || startIndex > endIndex) return [];
-		
-	return [retVal | retVal <- source[startIndex..(endIndex + 1)] ];
+	if(numElements <= 7 || startIndex >= numElements || startIndex >= endIndex || endIndex >= numElements) return [];
+	
+	return [ retVal | retVal <- source[startIndex..(endIndex + 1)] ];
 }
-
-//private str extractMethodBody(str source) {
-//	return visit(source) {
-//		case /.*\{/si => ""
-//		case /^(public|private|protected).*\{[\r|\n|\r\n]?$/si => ""
-//	}
-//}
 
 private str toCleanString(list[str] input) {
 	str retVal = "";
 	
 	for(i <- input) {
-		retVal += i;
+		retVal += i + "\r\n";
 	}
 	
 	return retVal;
