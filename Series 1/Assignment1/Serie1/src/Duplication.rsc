@@ -13,8 +13,10 @@ import Volume;
 
 M3 m3Project;
 
-list[str] occurrences = [];
+map[loc,str] fileCache = ();
+
 list[loc] firstOccurrences = [];
+list[str] occurrences = [];
 bool foundADuplicate = false;
 
 public num duplicationRatio(loc project) {
@@ -22,10 +24,27 @@ public num duplicationRatio(loc project) {
 	
 	if(isEmpty(m3Project)) return 0;
 	
+	// load files into cache
 	for(file <- files(m3Project)) {
-		processMethods(file);
+		// create a map of locations associated with the file contents
+		str lines = readFile(file);
+		fileCache = (file: lines) + fileCache;
 	}
 	
+	// traverse the files and check each file's methods for duplicates
+	for(file <- files(m3Project)) {
+		println("Checking <file>...");
+		processFileMethods(file);
+	}
+	
+	println("Found originals:");
+	iprintln(firstOccurrences);
+	
+	println("Found duplicates:");
+	iprintln(occurrences);
+	
+	
+	// Calculate end-result percentage
 	int duplicates = size(occurrences);
 	//num projectLoc = countProjectLOC(m3Project);
 	//num percentage = (duplicates / projectLoc) * 100;
@@ -37,7 +56,7 @@ public num duplicationRatio(loc project) {
 	return 0.0; //percentage; // % of total project
 }
 
-private void processMethods(loc file) {
+private void processFileMethods(loc file) {
 	M3 m3File = createM3FromFile(file);
 	
 	set[loc] methods = { m | m <- methods(m3File) };
@@ -48,6 +67,7 @@ private void processMethods(loc file) {
 		findDuplicates(sourceLines, file);
 		
 		if(foundADuplicate) {
+			// if a duplicate was found, add the 'original' to the list of firstOccurrences
 			firstOccurrences = [method] + firstOccurrences;
 		}
 		
@@ -77,8 +97,8 @@ private void findDuplicates(list[str] source, loc original) {
 }
 
 private int findInAllFiles(str sourceExcerpt, loc original) {
-	for(file <- files(m3Project)) {
-		str lines = readFile(file);
+	for(file <- fileCache) {
+		str lines = fileCache[file];
 		
 		list[int] intersection = findAll(lines, sourceExcerpt);
 		int intersections = size(intersection);
