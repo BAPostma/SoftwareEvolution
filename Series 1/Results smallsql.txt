@@ -1,0 +1,46 @@
+-----------------------------------------------
+--------- SIGs Maintainability Index  ---------
+-----------------------------------------------
+Start counting LOC
+Ready counting LOC
+Calculating Cyclometic Complexity
+	Method information gathered
+	Complexiting rating gathered
+Calculating code duplication
+Duplication calculation completed
+	Duplication rating gathered
+Unit testing rating gathered
+Unit size determination started
+Unit size determination finished
+-----------------------------------------------
+---------         Volume              ---------
+-----------------------------------------------
+Total LOC: 24304
+Rating for volume: 5 stars
+-----------------------------------------------
+---------         Complexity          ---------
+-----------------------------------------------
+Rating for complexity: 1 stars
+Simple methods: 2267
+Moderate methods: 72
+High risk methods: 40
+Very high risk methods: 21
+-----------------------------------------------
+---------         Unit Size           ---------
+-----------------------------------------------
+Number of methods per category:
+	Simple: 1949
+	Moderate: 401
+	High: 39
+	Very high: 11
+Rating for unit size: 4 stars
+-----------------------------------------------
+--------         Duplication          ---------
+-----------------------------------------------
+Total duplicates: 878
+Duplication %: 3.61257406200
+Rating for duplication: 4 stars
+-----------------------------------------------
+---------        Unit Testing         ---------
+-----------------------------------------------
+Number of asserts found: 7
