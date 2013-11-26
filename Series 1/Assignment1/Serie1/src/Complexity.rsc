@@ -47,7 +47,6 @@ public map[str, tuple[num, num]] convertCCMethodsToRisk(map[loc, tuple[num cc, n
 	result += ("complex": <0,0>);
 	result += ("untestable": <0,0>);
 	
-	
 	for(key <- methods){
 		num c = methods[key].cc; // cc value
 		num n = methods[key].lines; // number of lines
@@ -85,8 +84,7 @@ public map[str, tuple[num,num]] convertRiskTableLocToPercentage(map[str, tuple[n
 	toConvert["complex"][1] = round((toConvert["complex"][1] / totalLOC) * 100);
 	toConvert["untestable"][1] = round((toConvert["untestable"][1] / totalLOC) * 100);
 	
-	return toConvert;
-		
+	return toConvert;	
 }
 public tuple[num cc, num asserts, num lines] cyclometicComplexityPerMethod(loc method, project){
 	ast = getMethodASTEclipse(method, model = project);
@@ -104,6 +102,9 @@ public tuple[num cc, num asserts, num lines] cyclometicComplexityPerMethod(loc m
 		case \foreach(_,_,_):				count += 1;
 		case \infix(_, op, _, _):			if(op == "&&" || op == "||") count += 1;
 		case \catch(_,_):					count += 1;
+		case \return():						count += 1;
+		case \return(_):					count += 1;
+		case \throw(_):						count += 1;
 		case \assert(_):					asserts += 1;
 		case \assert(_,_):					asserts += 1;
 	}
