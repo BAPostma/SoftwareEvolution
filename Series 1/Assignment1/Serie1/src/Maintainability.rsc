@@ -30,7 +30,8 @@ public void analyze(M3 project){
 	methodInfo = ccMethodsInfo(project);
 	println("\tMethod information gathered");
 	
-	ccRating = getRatingForChangeability(convertCCMethodsToRisk(methodInfo));
+	convertedCCMethods = convertCCMethodsToRisk(methodInfo);
+	ccRating = getRatingForChangeability(convertRiskTableLocToPercentage(convertedCCMethods));
 	println("\tComplexiting rating gathered");
 	
 	println("Calculating code duplication");
@@ -62,6 +63,11 @@ public void analyze(M3 project){
 	 println("---------         Complexity          ---------");
 	 println("-----------------------------------------------");
 	 println("Rating for complexity: <6 - ccRating> stars");
+	 println("Simple methods: <convertedCCMethods["simple"][0]>");
+	 println("Moderate methods: <convertedCCMethods["more_complex"][0]>");
+	 println("High risk methods: <convertedCCMethods["complex"][0]>");
+	 println("Very high risk methods: <convertedCCMethods["untestable"][0]>");
+	 
 	 
 	 println("-----------------------------------------------");
 	 println("---------         Unit Size           ---------");

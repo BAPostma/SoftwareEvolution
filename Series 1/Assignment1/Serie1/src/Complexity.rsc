@@ -66,7 +66,7 @@ public map[str, tuple[num, num]] convertCCMethodsToRisk(map[loc, tuple[num cc, n
 			result["untestable"][1] += n;
 		}
 	}
-	return convertRiskTableLocToPercentage(result);
+	return result;
 }
 /**
  * convertRiskTableLocToPercentage
@@ -75,7 +75,7 @@ public map[str, tuple[num, num]] convertCCMethodsToRisk(map[loc, tuple[num cc, n
  * @param toConvert - map[risk, tuple[count, loc]]
  * @return toConvert - map[risk, tuple[count, %]]
  */
-private map[str, tuple[num,num]] convertRiskTableLocToPercentage(map[str, tuple[num, num]] toConvert){
+public map[str, tuple[num,num]] convertRiskTableLocToPercentage(map[str, tuple[num, num]] toConvert){
 	num totalLOC = 0;
 	totalLOC += toConvert["simple"][1] + toConvert["more_complex"][1];
 	totalLOC += toConvert["complex"][1] + toConvert["untestable"][1];
