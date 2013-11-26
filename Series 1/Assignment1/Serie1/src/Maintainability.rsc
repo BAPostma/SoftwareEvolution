@@ -78,7 +78,7 @@ public void analyze(M3 project){
 	 println("-----------------------------------------------");
 	 println("Total duplicates: <duplicates.duplicates>");
 	 println("Duplication %: <duplicates.duplication>");
-	 println("Rating for duplication: <dupRating>");
+	 println("Rating for duplication: <dupRating> stars");
 
 	 println("-----------------------------------------------");
 	 println("---------        Unit Testing         ---------");

@@ -128,15 +128,15 @@ private str toCleanString(list[str] input) {
 
 public str getRatingForDuplication(tuple[int duplicates, num duplication] result) {
 	if(result.duplication <= 3) {
-		return "++";
+		return "5";
 	} else if(result.duplication > 3 && result.duplication <= 5) {
-		return "+";
+		return "4";
 	} else if(result.duplication > 5 && result.duplication <= 10) {
-		return "o";
+		return "3";
 	} else if(result.duplication > 10 && result.duplication <= 20) {
-		return "-";
+		return "2";
 	} else if(result.duplication > 20) {
-		return "--";
+		return "1";
 	}
 }
 
