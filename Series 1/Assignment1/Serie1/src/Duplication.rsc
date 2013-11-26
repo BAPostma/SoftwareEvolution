@@ -15,8 +15,8 @@ M3 m3Project;
 
 map[loc,str] fileCache = ();
 
-list[loc] firstOccurrences = [];
-list[str] occurrences = [];
+map[loc,value] firstOccurrences = ();
+map[loc,value] occurrences = ();
 bool foundADuplicate = false;
 
 public num duplicationRatio(loc project) {
@@ -68,7 +68,7 @@ private void processFileMethods(loc file) {
 		
 		if(foundADuplicate) {
 			// if a duplicate was found, add the 'original' to the list of firstOccurrences
-			firstOccurrences = [method] + firstOccurrences;
+			firstOccurrences = (method: toCleanString(sourceLines)) + firstOccurrences;
 		}
 		
 		foundADuplicate = false; // reset after processing every method
@@ -86,7 +86,8 @@ private void findDuplicates(list[str] source, loc original) {
 		int intersections = findInAllFiles(excerpt, original);
 		
 		if(intersections > 0) {
-			occurrences = [excerpt] + occurrences;
+			foundADuplicate = true;
+			occurrences = (original: excerpt) + occurrences;
 			rowIndex += 7;
 		} else {
 			rowIndex += 1;
@@ -103,8 +104,7 @@ private int findInAllFiles(str sourceExcerpt, loc original) {
 		list[int] intersection = findAll(lines, sourceExcerpt);
 		int intersections = size(intersection);
 		
-		if(size(intersection) > 0 && file != original) {
-			foundADuplicate = true;
+		if(intersections > 0) { // && file != original) {
 			return intersections; // return number of duplicates found
 		}
 	}
