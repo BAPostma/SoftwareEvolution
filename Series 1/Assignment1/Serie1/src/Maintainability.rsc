@@ -6,10 +6,11 @@ import List;
 
 import Volume;
 import Complexity;
+import Duplication;
 import UnitSize;
 
 /**
- * number of starts: 6 - rating
+ * number of stars: 6 - rating
  * ++ => 1
  * ..
  * -- => 5
@@ -31,6 +32,12 @@ public void analyze(M3 project){
 	
 	ccRating = getRatingForChangeability(convertCCMethodsToRisk(methodInfo));
 	println("\tComplexiting rating gathered");
+	
+	println("Calculating code duplication");
+	tuple[int duplicates, num duplication] duplicates = duplicationRatio(project, totalLoc);
+	println("Duplication calculation completed");
+	str dupRating = getRatingForDuplication(duplicates);
+	println("\tDuplication rating gathered");
 	
 	asserts = sum([methodInfo[m].asserts | m <- methodInfo]);
 	println("Unit testing rating gathered");
@@ -65,9 +72,21 @@ public void analyze(M3 project){
 	 println("\tHigh: <numberPerRisk["risk"]>");
 	 println("\tVery high: <numberPerRisk["highRisk"]>");
 	 println("Rating for unit size: <6 - ratingUnitSize> stars");
+	 
+ 	 println("-----------------------------------------------");
+	 println("--------         Duplication          ---------");
+	 println("-----------------------------------------------");
+	 println("Total duplicates: <duplicates.duplicates>");
+	 println("Duplication %: <duplicates.duplication>");
+	 println("Rating for duplication: <dupRating>");
 
 	 println("-----------------------------------------------");
 	 println("---------        Unit Testing         ---------");
 	 println("-----------------------------------------------");
 	 println("Number of asserts found: <asserts>"); 
+}
+
+public void analyze(loc project) {
+	m3proj = createM3FromEclipseProject(project);
+	analyze(m3proj);
 }

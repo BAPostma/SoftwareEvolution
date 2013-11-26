@@ -19,10 +19,8 @@ map[loc,value] firstOccurrences = ();
 map[loc,value] occurrences = ();
 bool foundADuplicate = false;
 
-public num duplicationRatio(loc project) {
-	m3Project = createM3FromEclipseProject(project);
-	
-	if(isEmpty(m3Project)) return 0;
+public tuple[int duplicates, num duplication] duplicationRatio(M3 project, num totalLoc) {
+	m3Project = project;
 	
 	// load files into cache
 	for(file <- files(m3Project)) {
@@ -33,27 +31,23 @@ public num duplicationRatio(loc project) {
 	
 	// traverse the files and check each file's methods for duplicates
 	for(file <- files(m3Project)) {
-		println("Checking <file>...");
+		//println("Checking <file>...");
 		processFileMethods(file);
 	}
 	
-	println("Found originals:");
-	iprintln(firstOccurrences);
+	//println("Found originals:");
+	//iprintln(firstOccurrences);
 	
-	println("Found duplicates:");
-	iprintln(occurrences);
-	
+	//println("Found duplicates:");
+	//iprintln(occurrences);
 	
 	// Calculate end-result percentage
-	int duplicates = size(occurrences);
-	//num projectLoc = countProjectLOC(m3Project);
-	//num percentage = (duplicates / projectLoc) * 100;
-	
-	println("Duplicates: <duplicates>");
-	//println("Total LOC: <projectLoc>");
-	//println("Percentage duplicate: <percentage>");
-	
-	return 0.0; //percentage; // % of total project
+	int duplicates = size([ k | k:_ <- firstOccurrences ]) + size([ k | k:_ <- occurrences ]);
+	num projectLoc = totalLoc;
+	num percentage = (duplicates / projectLoc) * 100;
+		
+	tuple[int duplicates, num duplication] returnValue = <duplicates, percentage>;
+	return returnValue;
 }
 
 private void processFileMethods(loc file) {
@@ -132,5 +126,17 @@ private str toCleanString(list[str] input) {
 	return retVal;
 }
 
-
+public str getRatingForDuplication(tuple[int duplicates, num duplication] result) {
+	if(result.duplication <= 3) {
+		return "++";
+	} else if(result.duplication > 3 && result.duplication <= 5) {
+		return "+";
+	} else if(result.duplication > 5 && result.duplication <= 10) {
+		return "o";
+	} else if(result.duplication > 10 && result.duplication <= 20) {
+		return "-";
+	} else if(result.duplication > 20) {
+		return "--";
+	}
+}
 
