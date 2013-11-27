@@ -93,17 +93,13 @@ public tuple[num cc, num asserts, num lines] cyclometicComplexityPerMethod(loc m
 	visit(ast){
 		case \if(_,_) : 					count += 1;
 		case \if(_,_,_):					count += 1;
-		case \switch(_,_):					count += 1;
 		case \case(_) : 					count += 1;
 		case \while(_,_):					count += 1;
-		case \do(_,_):						count += 1;
 		case \for(_,_,_):					count += 1;
 		case \for(_,_,_,_):					count += 1;
 		case \foreach(_,_,_):				count += 1;
 		case \infix(_, op, _, _):			if(op == "&&" || op == "||") count += 1;
-		case \catch(_,_):					count += 1;
-		case \return():						count += 1;
-		case \return(_):					count += 1;
+		case \conditional(_,_,_):			count += 1;
 		case \throw(_):						count += 1;
 		case \assert(_):					asserts += 1;
 		case \assert(_,_):					asserts += 1;
