@@ -126,17 +126,17 @@ private str toCleanString(list[str] input) {
 	return retVal;
 }
 
-public str getRatingForDuplication(tuple[int duplicates, num duplication] result) {
+public int getRatingForDuplication(tuple[int duplicates, num duplication] result) {
 	if(result.duplication <= 3) {
-		return "5";
+		return 5;
 	} else if(result.duplication > 3 && result.duplication <= 5) {
-		return "4";
+		return 4;
 	} else if(result.duplication > 5 && result.duplication <= 10) {
-		return "3";
+		return 3;
 	} else if(result.duplication > 10 && result.duplication <= 20) {
-		return "2";
+		return 2;
 	} else if(result.duplication > 20) {
-		return "1";
+		return 1;
 	}
 }
 

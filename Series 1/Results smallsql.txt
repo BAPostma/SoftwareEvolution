@@ -15,32 +15,34 @@ Unit size determination finished
 -----------------------------------------------
 ---------         Volume              ---------
 -----------------------------------------------
-Total LOC: 24304
+Total LOC: 18950
 Rating for volume: 5 stars
 -----------------------------------------------
 ---------         Complexity          ---------
 -----------------------------------------------
 Rating for complexity: 1 stars
-Simple methods: 2267
-Moderate methods: 72
-High risk methods: 40
-Very high risk methods: 21
+Simple methods: 2036
+Moderate methods: 49
+High risk methods: 34
+Very high risk methods: 5
 -----------------------------------------------
 ---------         Unit Size           ---------
 -----------------------------------------------
 Number of methods per category:
-	Simple: 1949
-	Moderate: 401
-	High: 39
-	Very high: 11
+	Simple: 1824
+	Moderate: 260
+	High: 31
+	Very high: 9
 Rating for unit size: 4 stars
 -----------------------------------------------
 --------         Duplication          ---------
 -----------------------------------------------
-Total duplicates: 878
-Duplication %: 3.61257406200
+Total duplicates: 660
+Duplication %: 3.48284960400
 Rating for duplication: 4 stars
 -----------------------------------------------
 ---------        Unit Testing         ---------
 -----------------------------------------------
 Number of asserts found: 7
+
+Runtime: 53 sec

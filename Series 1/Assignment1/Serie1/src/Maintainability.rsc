@@ -1,6 +1,8 @@
 module Maintainability
 
 import lang::java::jdt::m3::Core;
+import lang::java::jdt::m3::AST;
+import analysis::m3::Registry;
 import IO;
 import List;
 
@@ -9,11 +11,24 @@ import Complexity;
 import Duplication;
 import UnitSize;
 
+// Ripped from RASCAL and modified to exclude junit/test files
+// So, thanks to the developers of Rascal! :-)
+public M3 createM3FromProject(loc project) {
+  setEnvironmentOptions(classPathForProject(project), sourceRootsForProject(project));
+  compliance = getProjectOptions(project)["org.eclipse.jdt.core.compiler.compliance"];
+  // Filter out test / junit files!
+  theFiles = [x | x <- sourceFilesForProject(project), /test/i !:= x.path || /junit/i !:= x.path];
+  result = composeJavaM3(project, { createM3FromFile(f, javaVersion=compliance) | loc f <- theFiles});
+  registerProject(project, result);
+  return result;
+}
+
 /**
  * number of stars: 6 - rating
  * ++ => 1
  * ..
  * -- => 5
+ * Create a M3 model with the method createM3FromProject(loc) from this module!
  */
 public void analyze(M3 project){
 	println("-----------------------------------------------");
@@ -37,7 +52,7 @@ public void analyze(M3 project){
 	println("Calculating code duplication");
 	tuple[int duplicates, num duplication] duplicates = duplicationRatio(project, totalLoc);
 	println("Duplication calculation completed");
-	str dupRating = getRatingForDuplication(duplicates);
+	int dupRating = getRatingForDuplication(duplicates);
 	println("\tDuplication rating gathered");
 	
 	asserts = sum([methodInfo[m].asserts | m <- methodInfo]);
@@ -93,6 +108,6 @@ public void analyze(M3 project){
 }
 
 public void analyze(loc project) {
-	m3proj = createM3FromEclipseProject(project);
+	m3proj = createM3FromProject(project);
 	analyze(m3proj);
 }
