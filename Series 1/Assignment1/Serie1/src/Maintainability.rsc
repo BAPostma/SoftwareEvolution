@@ -17,7 +17,8 @@ public M3 createM3FromProject(loc project) {
   setEnvironmentOptions(classPathForProject(project), sourceRootsForProject(project));
   compliance = getProjectOptions(project)["org.eclipse.jdt.core.compiler.compliance"];
   // Filter out test / junit files!
-  theFiles = [x | x <- sourceFilesForProject(project), /test/i !:= x.path || /junit/i !:= x.path];
+  theFiles = [x | x <- sourceFilesForProject(project), /test/i !:= x.path];
+  theFiles = [x | x <- theFiles, /junit/i !:= x.path];
   result = composeJavaM3(project, { createM3FromFile(f, javaVersion=compliance) | loc f <- theFiles});
   registerProject(project, result);
   return result;
