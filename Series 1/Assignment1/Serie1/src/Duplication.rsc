@@ -4,6 +4,7 @@ import IO;
 import String;
 import List;
 import Map;
+import util::Math;
 import analysis::m3::AST;
 import analysis::m3::Core;
 import lang::java::m3::Core;
@@ -39,7 +40,8 @@ public void duplicationRatio(loc project) {
 }
 
 private void detectDuplicates() {
-	//list[str] foundResults = ();
+	foundDuplicates = ();
+	definitiveDuplicates = [];
 	
 	for(source <- sources) {
 		lines = sources[source];
@@ -47,12 +49,18 @@ private void detectDuplicates() {
 			result = findDuplicate(line);
 			
 			if(result.found) {
-				println("Found duplicate for: " + line);
-				iprintln(result.matches);
-				println();
+				foundDuplicates += (line: result.matches);
+			} else { // when we reach a line that doesn't have a duplicate
+				if(size(foundDuplicates) > 6) { // if we've found more than 6 consecutive lines duplicated
+					definitiveDuplicates += [foundDuplicates];
+				}
+				
+				foundDuplicates = (); // reset our consecutive duplication hits
 			}
 		}
 	}
+	
+	//iprintln(definitiveDuplicates);
 }
 
 private tuple[bool found, list[tuple[loc location, int offset]] matches] findDuplicate(str line) {
@@ -60,14 +68,25 @@ private tuple[bool found, list[tuple[loc location, int offset]] matches] findDup
 
 	for(source <- sources) {
 		lines = [ l | l:_ <- sources[source] ]; // extract a list of raw lines
-		lineNr = indexOf(lines, line); // find the line number of the param in the list (1-based)
+		lineNr = indexOf(lines, line) + 1; // find the line number of the param in the list (1-based)
 		
-		if(lineNr != -1) {
+		/// DEBUG
+		if(lineNr == 0) {
+			println();
+			iprintln("This line was not found: " + line + " in source... ");
+			for(l <- lines) {
+				iprintln(l);
+			}
+			println();
+		}
+		/// END DEBUG
+		
+		if(lineNr > 0) {
 			duplicates += [<source, lineNr>];
 		}
 	}
 	
-	if(size(duplicates) <= 0) {
+	if(size(duplicates) <= 1) { // 1 because it'll obviously find itself
 		return <false, []>;
 	} else {
 		return <true, duplicates>;
