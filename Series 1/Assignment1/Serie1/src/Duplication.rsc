@@ -28,18 +28,24 @@ public void duplicationRatio(M3 project, num totalLoc) {
 		
 		for(line <- lines) {
 			if(/^\s$/ := line || /^[\n|\r|\r\n|\t]+$/i := line || line == "") continue; // skip on empty lines
-			sources[file] += (line: []);
+			
+			str sanitisedLine = replaceAll(line, "\t", "");
+			sanitisedLine = replaceAll(sanitisedLine, "\r", "");
+			sanitisedLine = replaceAll(sanitisedLine, "\n", "");
+			
+			sources[file] += (sanitisedLine: []);
 		}
 	}
 	
-	detectDuplicates();
+	duplicates = detectDuplicates();
+	println(size(duplicates));
 }
 
 public void duplicationRatio(loc project) {
 	return duplicationRatio(createM3FromEclipseProject(project), 0);
 }
 
-private void detectDuplicates() {
+private list[map[str, list[tuple[loc location, int offset]]]] detectDuplicates() { //
 	foundDuplicates = ();
 	definitiveDuplicates = [];
 	
@@ -60,7 +66,7 @@ private void detectDuplicates() {
 		}
 	}
 	
-	//iprintln(definitiveDuplicates);
+	return definitiveDuplicates;
 }
 
 private tuple[bool found, list[tuple[loc location, int offset]] matches] findDuplicate(str line) {
@@ -71,14 +77,14 @@ private tuple[bool found, list[tuple[loc location, int offset]] matches] findDup
 		lineNr = indexOf(lines, line) + 1; // find the line number of the param in the list (1-based)
 		
 		/// DEBUG
-		if(lineNr == 0) {
-			println();
-			iprintln("This line was not found: " + line + " in source... ");
-			for(l <- lines) {
-				iprintln(l);
-			}
-			println();
-		}
+		//if(lineNr == 0) {
+		//	println();
+		//	iprintln("This line was not found: " + line + " in source... ");
+		//	for(l <- lines) {
+		//		iprintln(l);
+		//	}
+		//	println();
+		//}
 		/// END DEBUG
 		
 		if(lineNr > 0) {
