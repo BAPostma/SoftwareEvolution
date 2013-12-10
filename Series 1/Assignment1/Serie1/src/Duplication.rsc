@@ -14,6 +14,7 @@ import lang::java::jdt::m3::AST;
 import Volume;
 
 M3 m3Project;
+bool debug = true;
 
 //  file lines line     duplicates  dup loc     dup line no
 map[loc, map[str, list[tuple[loc location, int offset]]]] sources = ();
@@ -59,6 +60,7 @@ private list[map[str, list[tuple[loc location, int offset]]]] detectDuplicates()
 			} else { // when we reach a line that doesn't have a duplicate
 				if(size(foundDuplicates) > 6) { // if we've found more than 6 consecutive lines duplicated
 					definitiveDuplicates += [foundDuplicates];
+					if(debug) println("Found duplicate block of " + toString(size(foundDuplicates)) + " lines");
 				}
 				
 				foundDuplicates = (); // reset our consecutive duplication hits
