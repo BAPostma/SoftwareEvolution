@@ -76,17 +76,6 @@ private tuple[bool found, list[tuple[loc location, int offset]] matches] findDup
 		lines = [ l | l:_ <- sources[source] ]; // extract a list of raw lines
 		lineNr = indexOf(lines, line) + 1; // find the line number of the param in the list (1-based)
 		
-		/// DEBUG
-		//if(lineNr == 0) {
-		//	println();
-		//	iprintln("This line was not found: " + line + " in source... ");
-		//	for(l <- lines) {
-		//		iprintln(l);
-		//	}
-		//	println();
-		//}
-		/// END DEBUG
-		
 		if(lineNr > 0) {
 			duplicates += [<source, lineNr>];
 		}
