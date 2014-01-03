@@ -13,8 +13,6 @@ import lang::java::jdt::m3::AST;
 import vis::Figure;
 import vis::Render;
 
-import analysis::Statistics;
-
 private map[str, num] cocs;
 
 public void Visualise() {
