@@ -5,8 +5,7 @@ Start counting LOC
 Ready counting LOC
 Calculating Cyclometic Complexity
 	Method information gathered
-	Complexiting rating gathered
-Calculating code duplication
+	Complexiting rating gatheredCalculating code duplication
 Duplication calculation completed
 	Duplication rating gathered
 Unit testing rating gathered
