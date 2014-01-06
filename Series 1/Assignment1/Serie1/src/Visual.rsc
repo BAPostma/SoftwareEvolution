@@ -4,14 +4,18 @@ import lang::java::m3::Core;
 import vis::Figure;
 import vis::Render;
 import vis::KeySym;
-
+import util::Editors;
+import lang::java::m3::Registry;
 import IO;
 import List;
+import Map;
 
 private M3 projectModel;
+private map[loc, tuple[num cc, num asserts, num lines]] methodInfo;
 
-public void visualize(M3 model){
+public void visualize(M3 model, map[loc, tuple[num cc, num asserts, num lines]] methodInformation){
 	projectModel = model;
+	methodInfo = methodInformation;
 	projectName = model.id.authority;
 	
 	Figure fig = vcat(
@@ -88,12 +92,57 @@ private FProperty packageClickable(loc package){
 }
 private void renderPackageOverview(loc package){
 	fs = filesFromPackage(projectModel, package);
+	ds = projectModel@declarations;
 	
-	render(box(text(package.path), fillColor("green")));
+	// The methods in this package!
+	ms = [ d | f <- fs, d <- ds, d[1].path == f.path, isMethod(d[0])];
+	
+	list[Figure] lijst = [];
+	tuple[num cc, num asserts, num lines] inf;
+	for(m <- ms){
+		inf = methodInfo[m[0]];
+		lijst+= box(size(10), 
+					popup(m[0].path + "\nLOC: <inf.lines>\nCC: <inf.cc>"), 
+					editOnClick(m[0]),
+					fillColorForCC(inf.cc));
+	}
+	render(
+		vcat(
+		[
+			text("Method overview for package: " + package.path, fontColor("red")),
+			box(
+					pack(lijst, std(gap(5))), 
+					fillColor("lightgrey")
+				)
+		]
+		)
+	);
+}
+public FProperty fillColorForCC(num cc){
+	str c = "green";
+	
+	if(cc <= 10){
+		c = "green"; 
+	} else if ( cc > 10 && cc <= 20){
+		c = "chartreuse";
+	} else if ( cc > 20 && cc <= 50){
+		c = "orange";
+	} else {
+		c = "red";
+	}
+	
+	return fillColor(c);
+}
+public FProperty editOnClick(loc toEdit){
+	return onMouseDown(bool (int butnr, map[KeyModifier,bool] modifiers) {
+                edit(resolveJava(toEdit)); 
+                return true;
+        	});
 }
 public FProperty popup(str message){
 	return mouseOver(box(text(" " + message + " "), fillColor("yellow"), resizable(false)));
 }
 public list[loc] filesFromPackage(M3 project, loc package){
 	return [ x[1] | x <- project@containment, x[0] == package ]; 
+
 }
