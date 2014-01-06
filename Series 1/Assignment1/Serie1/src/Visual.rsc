@@ -109,12 +109,20 @@ private void renderPackageOverview(loc package){
 	render(
 		vcat(
 		[
-			text("Method overview for package: " + package.path, fontColor("red")),
+			text("Method overview for package: " + package.path, fontColor("red"), fontSize(20)),
+			hcat(
+				[
+					text("Legenda:"),
+					box(text("++"), size(20), fillColor("green")),
+					box(text("+"), size(20), fillColor("chartreuse")),
+					box(text("-"), size(20), fillColor("orange")),
+					box(text("--"), size(20), fillColor("red"))
+				], std(resizable(false)), std(gap(10))
+			),
 			box(
-					pack(lijst, std(gap(5))), 
-					fillColor("lightgrey")
+					pack(lijst, std(gap(5)))
 				)
-		]
+		], std(gap(10))
 		)
 	);
 }
